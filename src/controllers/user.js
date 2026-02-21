@@ -175,7 +175,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
-        .json(200, req.user, "User fetched succesfully")
+        .json(new ApiResponse(200, {}, "User fetched successfully"))
 })
 
 // const getUserChannelProfile = asyncHandler(async (req, res) => {
@@ -310,17 +310,13 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
     const { username } = req.params;
 
-    if (!username?.trim()) {
-        throw new ApiError(400, "Username is missing");
-    }
+    if (!username?.trim()) throw new ApiError(400, "Username is missing");
 
     const channel = await User.findOne({
         username: username.toLowerCase()
     }).select("-password -refreshToken");
 
-    if (!channel) {
-        throw new ApiError(404, "Channel does not exist");
-    }
+    if (!channel) throw new ApiError(404, "Channel does not exist");
 
     const subscribersCount = await Subscription.countDocuments({
         channel: channel._id
@@ -362,14 +358,12 @@ const getWatchHistory = asyncHandler(async (req, res) => {
             path: "watchHistory",
             populate: {
                 path: "owner",
-                select: "username fullname avatar"
+                select: "username avatar"
             }
         })
         .select("watchHistory")
 
-    if (!user) {
-        throw new ApiError(404, "User not found")
-    }
+    if (!user) throw new ApiError(404, "User not found")
 
     return res.status(200).json(
         new ApiResponse(
@@ -379,7 +373,6 @@ const getWatchHistory = asyncHandler(async (req, res) => {
         )
     )
 })
-
 
 export { registerUser, loginUser, logoutUser, refreshAccessToken, changeCurrentPassword, getCurrentUser, getUserChannelProfile, getWatchHistory }
 
