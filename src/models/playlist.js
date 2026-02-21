@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const playlistSchema = new mongoose.Schema({
 
-    content: {
+    name: {
         type: String,
         required: true
     },
@@ -10,7 +10,7 @@ const playlistSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    video: [{
+    videos: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Video"
     }],
